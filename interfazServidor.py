@@ -70,7 +70,7 @@ class InterfazServidor:
 
     def mostrar_log_trabajo(self):
         self.sesion = Servidor.get_sesion()
-        self.usuario = Servidor.get_usuarios()
+        self.usuarios = Servidor.get_usuarios()
         if self.sesion and 'nombre_usuario' in self.sesion:
             nombre_usuario = self.sesion['nombre_usuario']
             # Verificamos si el usuario tiene permisos de administrador
@@ -82,15 +82,34 @@ class InterfazServidor:
         else:
             print("No hay ningún usuario en sesión.")
 
-    def seleccionar_modo_trabajo(self):
-        self.modo_trabajo = None
-        while self.modo_trabajo not in "manual" or "automatico":
-            self.modo_trabajo = input("Ingrese: manual/automatico")
-        print(f"Modo de trabajo en {self.modo_trabajo}")
+def seleccionar_modo_trabajo(self):
+    while True:
+        # Mostrar el estado actual del modo de trabajo si ya está configurado
+        if self.modo_trabajo in ["manual", "automatico"]:
+            print(f"El modo de trabajo actual es: {self.modo_trabajo}")
+            cambiar = input("¿Desea cambiar el modo de trabajo? (s/n): ").lower()
+            
+            if cambiar == 'n':
+                break
+            elif cambiar == 's':
+                pass  # Si elige cambiar, se sale de este if y sigue el flujo para cambiar el modo
+            else:
+                print("Opción no válida, por favor ingrese 's' para sí o 'n' para no.")
+                continue  # Regresa al comienzo del ciclo para pedir una respuesta válida
+
+        # Solicitar nuevo modo de trabajo si es necesario o si el usuario quiere cambiarlo
+        self.modo_trabajo = input("Ingrese: manual/automatico: ").lower()
+
+        if self.modo_trabajo in ["manual", "automatico"]:
+            print(f"Modo de trabajo establecido en {self.modo_trabajo}")
+            break
+        else:
+            print("Opción no válida, intente de nuevo.")
+
 
     def mostrar_usuarios(self):
         self.sesion = Servidor.get_sesion()
-        self.usuario = Servidor.get_usuarios()
+        self.usuarios = Servidor.get_usuarios()
         if self.sesion and 'nombre_usuario' in self.sesion:
             nombre_usuario = self.sesion['nombre_usuario']
             # Verificamos si el usuario tiene permisos de administrador
