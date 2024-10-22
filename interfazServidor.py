@@ -151,7 +151,7 @@ class InterfazServidor:
         print(" M18: Desactivar motores \n")
 
     def escribir_comando(self):
-        if self.modo_trabajo == "Manual":
+        if self.modo_trabajo == "manual":
             try: 
                 comando = input("Ingrese el comando en G-Code para accionar el robot: ")
                 self.controlador.enviar_comando(comando)

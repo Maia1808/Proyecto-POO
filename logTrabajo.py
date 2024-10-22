@@ -15,7 +15,6 @@ class LogTrabajo:
         # Generar la cabecera si el archivo no existe
         header = ['Fecha y Hora', 'Peticiones', 'IP', 'Usuario', 'Fallos', 'Exitos', 'Tiempo de Ejecucion']
 
-        # Intentamos abrir el archivo en modo append
         try:
             with open(archivo, mode='a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
@@ -36,7 +35,7 @@ class LogTrabajo:
                 ])
 
         except Exception as e:
-            print(f"Error al escribir el log: {e}")
+            print(f"Error al escribir el log en {archivo}: {e}")
 
     def leer_CSV(self, archivo='log_trabajo.csv'):
         "Lee y muestra el contenido del archivo CSV."
@@ -44,12 +43,12 @@ class LogTrabajo:
             with open(archivo, mode='r', newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader)  # Leer la cabecera
-                print(", ".join(header))  # Mostrar la cabecera
+                print(" | ".join(header))  # Mostrar la cabecera con separadores
 
                 for row in reader:
-                    print(", ".join(row))  # Mostrar cada fila de datos
+                    print(" | ".join(row))  # Mostrar cada fila de datos
 
         except FileNotFoundError:
             print(f"El archivo {archivo} no existe.")
         except Exception as e:
-            print(f"Error al leer el archivo: {e}")
+            print(f"Error al leer el archivo {archivo}: {e}")

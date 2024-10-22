@@ -55,3 +55,23 @@ G90: Modo de coordenadas absolutas
 G91: Modo de coordenadas relativas
 M17: Activar motores
 M18: Desactivar motores
+
+# Realizado 22/10 Renzo: 
+
+    - Atributo inicio_actividad en class Usuario: 
+
+        .Se agregó un atributo en el constructor (__init__) que almacena el momento en que comienza la actividad, utilizando datetime.now(). Esto permite registrar el inicio exacto de la actividad.
+
+    - Método tiempo_trasncurrido en class Usuario: 
+
+        .Se implementó un método que calcula el tiempo transcurrido desde que la actividad inició hasta el momento actual, restando el tiempo de inicio del tiempo actual. 
+
+    - Actualización del reporte (mostrar_info): En el reporte de la actividad:
+
+        .Se muestra el estado de la conexión, la posición y el estado de actividad.
+        .Se muestra el momento exacto en que comenzó la actividad (inicio_actividad).
+        .Se incluye el cálculo dinámico del tiempo de actividad, expresado en segundos.
+
+    - Escritura de los metodos para serializar/deserializar la lista de usuario:
+
+        .Se crearon 2 metodos para guardar y leer usuarios
