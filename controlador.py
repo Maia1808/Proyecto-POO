@@ -30,6 +30,8 @@ class Controlador:
             self.arduino = serial.Serial(self.puerto_COM, self.baudrate, timeout=1)
             self.estado_robot = True
             print(f"Conexión establecida en {self.puerto_COM} con baudrate {self.baudrate}.")
+        except serial.SerialException as e:
+            print(f"Error al conectar: Verifique que el puerto {self.puerto_COM} esté disponible y correcto.")
         except Exception as e:
             print(f"Error al conectar: {e}")
 
@@ -43,15 +45,23 @@ class Controlador:
 
     def activar_motores(self):
         if self.estado_robot:
-            self.enviar_comando('M17')
-            self.estado_motores = True
+            respuesta = self.enviar_comando('M17')
+            if respuesta:
+                print("Motores activados.")
+                self.estado_motores = True
+            else:
+                print("Error al activar motores.")
         else:
             print("No se pueden activar los motores. El robot no está conectado.")
     
     def desactivar_motores(self):
         if self.estado_robot:
-            self.enviar_comando('M18')
-            self.estado_motores = False
+            respuesta = self.enviar_comando('M18')
+            if respuesta:
+                print("Motores desactivados.")
+                self.estado_motores = False
+            else:
+                print("Error al desactivar motores.")
         else:
             print("No se pueden desactivar los motores. El robot no está conectado.")
 
@@ -61,6 +71,10 @@ class Controlador:
                 self.arduino.write(comando.encode())  # Enviar comando en formato de bytes
                 time.sleep(1)  # Tiempo de espera para recibir respuesta
                 respuesta = self.arduino.readline().decode('utf-8').strip()  # Leer respuesta
+                if respuesta:
+                    print(f"Respuesta recibida: {respuesta}")
+                else:
+                    print("No se recibió respuesta del robot.")
                 return respuesta
             except Exception as e:
                 print(f"Error al enviar comando: {e}")

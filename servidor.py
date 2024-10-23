@@ -31,6 +31,9 @@ class Servidor:
         nuevo_usuario = Usuario(nombre_usuario, contrasena)
         self.usuarios.append(nuevo_usuario)
         print(f"Usuario {nombre_usuario} agregado correctamente.")
+        
+        # Guardar automáticamente el nuevo usuario en el archivo CSV
+        nuevo_usuario.guardar_usuarios_csv()
 
     def iniciar_sesion(self):
         while not self.sesion_iniciada:
