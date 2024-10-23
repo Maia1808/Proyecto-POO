@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     else if (opcion == 2) {
       // Apagar el servidor y salir
       if (client.execute("apagar_servidor", noArgs, result))
-        std::cout << "Servidor apagado correctamente.\n\n";
+        std::cout << "Servidor apagado correctamente: " << result << "\n\n";
       else
         std::cerr << "Error al intentar apagar el servidor.\n\n";
 
