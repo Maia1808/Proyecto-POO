@@ -1,5 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
+#include <fstream>
+#include <sstream>
 #include "libreria_Chris_Morley/XmlRpc.h" 
 using namespace std;
 using namespace XmlRpc;
@@ -37,11 +39,42 @@ public:
         }
     }
 
+    // Método para subir archivo G-Code
+    void subirArchivoGCode() {
+        string rutaArchivo;
+        cout << "Ingrese la ruta del archivo G-Code: ";
+        getline(cin >> ws, rutaArchivo);
+
+        // Leer el archivo
+        ifstream archivoGCode(rutaArchivo);
+        if (archivoGCode.fail()) {
+            cerr << "Error al abrir el archivo: " << rutaArchivo << "\n\n";
+            return;
+        }
+
+        // Convertir el contenido del archivo en una cadena
+        stringstream buffer;
+        buffer << archivoGCode.rdbuf();
+        string contenidoArchivo = buffer.str();
+
+        // Establecer los argumentos
+        args[0] = XmlRpcValue(rutaArchivo);        // Nombre del archivo
+        args[1] = XmlRpcValue(contenidoArchivo);
+
+        // Enviar al servidor
+        if (client.execute("subir_archivo_gcode", args, result)) {
+            cout << "Respuesta del servidor: " << result << "\n\n";
+        } else {
+            cerr << "Error al subir el archivo G-Code\n\n";
+        }
+    }
+
     // Método para mostrar el menú
     void mostrarMenu() {
         cout << "Menu de opciones:\n";
         cout << "1. Saludo personalizado\n";
-        cout << "2. Salir y apagar todo\n";
+        cout << "2. Subir archivo G-Code\n";
+        cout << "3. Salir y apagar todo\n";
         cout << "Seleccione una opción: ";
     }
 };
@@ -71,8 +104,11 @@ public:
 
             if (opcion == 1) {
                 cliente->solicitarSaludo();
-            } 
+            }  
             else if (opcion == 2) {
+                cliente->subirArchivoGCode();
+            } 
+            else if (opcion == 3) {
                 cliente->apagarServidor();
                 cout << "Cliente apagado.\n";
                 break;

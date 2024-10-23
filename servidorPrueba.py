@@ -14,6 +14,7 @@ class MiServidorXMLRPC:
         # Registrar las funciones remotas
         self.server.register_function(self.saludo_personalizado, "saludo_personalizado")
         self.server.register_function(self.apagar_servidor, "apagar_servidor")
+        self.server.register_function(self.subir_archivo_gcode, "subir_archivo_gcode")
 
     # Función remota para saludo personalizado
     def saludo_personalizado(self, nombre):
@@ -32,6 +33,20 @@ class MiServidorXMLRPC:
         time.sleep(1)  # Esperar para dar tiempo al cliente
         self.server.shutdown()  # Detener el servidor de manera controlada
         sys.exit(0)  # Salir de manera segura
+
+
+     # Función remota para recibir y almacenar archivos G-Code
+    def subir_archivo_gcode(self, nombre_archivo, contenido_archivo):
+        try:
+            with open(nombre_archivo, 'w') as f:
+                f.write(contenido_archivo)
+
+            print(f"Archivo {nombre_archivo} recibido.")
+            print(f"Contenido del archivo: \n{contenido_archivo}")
+            
+            return f"Archivo {nombre_archivo} recibido y almacenado correctamente."
+        except Exception as e:
+            return f"Error al guardar el archivo: {str(e)}"
 
     # Método para iniciar el servidor
     def iniciar(self):
