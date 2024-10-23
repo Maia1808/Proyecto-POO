@@ -2,6 +2,8 @@ from archivo import Archivo
 from logTrabajo import LogTrabajo
 from servidor import Servidor
 from controlador import Controlador
+import time
+
 
 class InterfazServidor:
 
@@ -10,6 +12,13 @@ class InterfazServidor:
         self.controlador = Controlador()  # Instancia de Controlador
         self.servidor = Servidor()  # Instancia de Servidor
         self.modo_coordenadas = modo_coordenadas
+        self.usuario = None
+        self.peticion = None
+        self.ip_cliente = None
+
+    def iniciar_sesion_usuario(self):
+        print(f"Sesion iniciada por el usuario: {self.usuario} con la IP: {self.IP}")	
+
 
     def listar_comandos(self):
         print("Comandos posibles a realizar: \n")
@@ -29,6 +38,8 @@ class InterfazServidor:
         while opcion_elegida not in list(range(1, 10)):
             try:
                 opcion_elegida = int(input("Ingrese la acción a realizar: "))
+                inicio = time.time()
+
                 if opcion_elegida == 1:
                     self.activar_desactivar_robot()
                 elif opcion_elegida == 2:
@@ -66,23 +77,37 @@ class InterfazServidor:
                     print("Opción no válida.")
             except ValueError:
                 print("Por favor, ingrese un número válido.")
+                peticion = None
+                if peticion:
+                    fin = time.time()
+                    tiempo_ejecucion = fin - inicio
+
+                    '''''''''
+                    LogTrabajo(peticiones=peticion, usuario = self.usuario, fallos = 0, exitos = 1, tiempo_ejecucion=tiempo_ejecucion, IP=self)
+                    '''
     
     def activar_desactivar_robot(self):
         if self.controlador.get_estado_robot():  # Usamos la instancia
             self.controlador.desconectar_robot()
+            self.peticion = "Desconectar robot"
         else:
             self.controlador.conectar_robot()
+            self.peticion = "Conectar robot"
 
     def activar_desactivar_motores(self):
         if self.controlador.get_estado_motores():
             self.controlador.desactivar_motores()  # Usamos la instancia
+            self.peticion = "Desactivar motores"
         else:
             self.controlador.activar_motores()
+            self.peticion = "Activar motores"
 
     def mostrar_reporte_general(self):
         Archivo.mostrar_info()  # Muestra información general
+        self.peticion= "Mostrar reporte general"
 
     def mostrar_log_trabajo(self):
+        self.peticion= "Mostrar log de trabajo"
         self.sesion = self.servidor.get_sesion()
         self.usuarios = self.servidor.get_usuarios()
         if self.sesion and 'nombre_usuario' in self.sesion:
@@ -100,6 +125,10 @@ class InterfazServidor:
         self.modo_trabajo = None
         while self.modo_trabajo not in ["manual", "automatico"]:  # Lista para validar los modos
             self.modo_trabajo = input("Ingrese: manual/automatico: ").lower()  # Convertir a minúsculas
+            if self.modo_trabajo == "manual":
+                self.peticion = "Seleccionar modo manual"
+            if self.modo_trabajo == "automatico":
+                self.peticion = "Seleccionar modo automatico"
         print(f"Modo de trabajo seleccionado: {self.modo_trabajo}")
 
     def seleccionar_modo_coordenadas(self):
@@ -109,10 +138,13 @@ class InterfazServidor:
         print(f"Modo de coordenadas seleccionado: {self.modo_coordenadas}")
         if self.modo_coordenadas == "absolutas":
             self.controlador.enviar_comando('G90')
+            self.peticion = "Seleccionar modo de coordenadas absolutas"
         elif self.modo_coordenadas == "relativas":
             self.controlador.enviar_comando('G91')
+            self.peticion = "Seleccionar modo de coordenadas relativas"
 
     def mostrar_usuarios(self):
+        self.peticion= "Mostrar usuarios"
         self.sesion = self.servidor.get_sesion()
         self.usuarios = self.servidor.get_usuarios()
         if self.sesion and 'nombre_usuario' in self.sesion:
@@ -129,6 +161,7 @@ class InterfazServidor:
             print("No hay ningún usuario en sesión.")
 
     def modificar_parametros_conexion(self):
+        self.peticion = "Modificar parametros de conexion"
         try:
             puerto_COM = input('Ingrese el nuevo puerto de COM al que se quiere conectar: ')
             baudrate = int(input('Ingrese la velocidad de comunicacion (baudrate): '))
@@ -151,6 +184,7 @@ class InterfazServidor:
         print(" M18: Desactivar motores \n")
 
     def escribir_comando(self):
+        self.peticion = "Enviar comando"
         if self.modo_trabajo == "manual":
             try: 
                 comando = input("Ingrese el comando en G-Code para accionar el robot: ")
@@ -159,7 +193,12 @@ class InterfazServidor:
                 print(f"Error al enviar el comando: {e} ")
         else: 
             print("El modo de trabajo no es manual. Por favor, cambie el modo de trabajo antes de realizar esta accion.")
-    
+'''
+
+    def set_ip_cliente(self):
+        self.ip_cliente = self.servidor.get_"
+
+    '''
     
 
 

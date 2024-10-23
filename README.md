@@ -75,3 +75,10 @@ M18: Desactivar motores
     - Escritura de los metodos para serializar/deserializar la lista de usuario:
 
         .Se crearon 2 metodos para guardar y leer usuarios
+
+
+# A realizar 23/10 Renzo:
+
+    - Revisar como enviar valores para inicializar la clase de archivo.py
+    - Revisar como enviar para valores para incializar la clase de logTrabajo.py
+    - Implementar registro en logTrabajo para todos los métodos

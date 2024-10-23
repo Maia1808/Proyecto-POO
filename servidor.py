@@ -1,4 +1,4 @@
-from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.server import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 from usuario import Usuario
 import threading
 
@@ -10,6 +10,8 @@ class Servidor:
         self.running = False  # Estado del servidor
         self.server = None  # Almacenará la instancia del servidor
         self.server_thread = None  # Hilo para el servidor
+        self.ip_cliente = None # Almacena ultima IP
+        self.comando_recibido = None # Almacena el ultimo comando recibido de un cliente
 
     def get_estado_servidor(self):
         return self.running
@@ -70,7 +72,7 @@ class Servidor:
         self.sesion_iniciada = False
         self.sesion = {}
 
-    def iniciar_servidor(self, host="localhost", port=8000):
+    def iniciar_servidor(self, host="localhost", port=8080):
         if self.sesion and 'nombre_usuario' in self.sesion:
             nombre_usuario = self.sesion['nombre_usuario']
             # Verificamos si el usuario tiene permisos de administrador
@@ -80,7 +82,10 @@ class Servidor:
                     self.running = True  # Cambia el estado a en ejecución
 
                     def run_server():
-                        self.server = SimpleXMLRPCServer((host, port))
+                        self.server = SimpleXMLRPCServer(
+                            (host, port),
+                            requestHandler=self.MyRequestHandler  # Usa la clase de manejador personalizada
+                        )
                         self.server.register_instance(self)
                         print(f"Servidor XML-RPC escuchando en {host}:{port}...")
                         while self.running:
@@ -90,7 +95,7 @@ class Servidor:
                     self.server_thread = threading.Thread(target=run_server)
                     self.server_thread.start()
                     return
-            print("Acceso denegado. Solo los administradores pueden apagar el servidor.")
+            print("Acceso denegado. Solo los administradores pueden iniciar el servidor.")
         else:
             print("No hay ningún usuario en sesión.")
 
@@ -113,3 +118,21 @@ class Servidor:
 
     def __repr__(self):
         return f"Servidor con {len(self.usuarios)} usuarios."
+    
+#####################################################################################################################################################################    
+    def recibir_comando_cliente(self, comando):
+        self.comando_recibido = comando
+        # return Alguna respuesta del servidor
+#####################################################################################################################################################################
+
+    class MyRequestHandler(SimpleXMLRPCRequestHandler):
+        
+        def handle(self):
+            # Capturar la IP del cliente y almacenarla en el servidor
+            servidor = self.server.instance
+            servidor.ip_cliente = self.client_address[0]
+            super().handle()  # Procesar normalmente la solicitud
+
+    def get_ip(self):
+        """Devuelve la última IP de cliente conectada"""
+        return self.ip_cliente

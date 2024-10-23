@@ -2,13 +2,14 @@ from datetime import datetime
 import csv
 
 class LogTrabajo:
-    def __init__(self, peticiones: str, IP: str, usuario: str, fallos: int, exitos: int, tiempo_ejecucion: float):
+    def __init__(self, peticiones: str, usuario: str, fallos: int, exitos: int, tiempo_ejecucion: float, IP: str="127.0.0.1"):
         self.peticiones = peticiones
         self.IP = IP
         self.usuario = usuario
         self.fallos = fallos
         self.exitos = exitos
         self.tiempo_ejecucion = tiempo_ejecucion
+        self.escribir_CSV()
 
     def escribir_CSV(self, archivo='log_trabajo.csv'):
         "Escribe la información del log en un archivo CSV."
